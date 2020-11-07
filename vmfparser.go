@@ -12,12 +12,21 @@ import (
 func main() {
 	sourceFiles := walkSourceFiles()
 
+	if _, err := os.Stat("results"); os.IsNotExist(err) {
+		os.Mkdir("results", os.ModePerm)
+	}
+
 	for _, file := range sourceFiles {
 		handleFile(file)
 	}
 }
 
 func walkSourceFiles() []string {
+	if _, err := os.Stat("sources"); os.IsNotExist(err) {
+		fmt.Println("Please, create a \"sources\" folder and put .vmf files there.")
+		return nil
+	}
+
 	var sources []string
 
 	err := filepath.Walk("sources", func(path string, info os.FileInfo, err error) error {

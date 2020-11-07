@@ -16,5 +16,5 @@ VMFParser
 vendor/
 
 # Software-specific
-results/*
-sources/*
+results/*.txt
+sources/*.vmf

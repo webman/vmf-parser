@@ -10,23 +10,23 @@ import (
 )
 
 func main() {
-	sourceFiles := walkSourceFiles()
+	createDirectoryIfItDoesNotExist("results")
+	createDirectoryIfItDoesNotExist("sources")
 
-	if _, err := os.Stat("results"); os.IsNotExist(err) {
-		os.Mkdir("results", os.ModePerm)
-	}
+	sourceFiles := walkSourceFiles()
 
 	for _, file := range sourceFiles {
 		handleFile(file)
 	}
 }
 
-func walkSourceFiles() []string {
-	if _, err := os.Stat("sources"); os.IsNotExist(err) {
-		fmt.Println("Please, create a \"sources\" folder and put .vmf files there.")
-		return nil
+func createDirectoryIfItDoesNotExist(directory string) {
+	if _, err := os.Stat(directory); os.IsNotExist(err) {
+		os.Mkdir(directory, os.ModePerm)
 	}
+}
 
+func walkSourceFiles() []string {
 	var sources []string
 
 	err := filepath.Walk("sources", func(path string, info os.FileInfo, err error) error {

@@ -97,6 +97,7 @@ func arrayContainsString(arr []string, str string) bool {
 }
 
 func getFileNameForPath(path string) string {
+	path = strings.ReplaceAll(path, "\\", "/")
 	substrings := strings.Split(path, "/")
 
 	return substrings[len(substrings)-1]

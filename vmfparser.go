@@ -5,8 +5,11 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"runtime"
 	"sort"
 	"strings"
+
+	"github.com/sqweek/dialog"
 )
 
 func main() {
@@ -14,6 +17,11 @@ func main() {
 	createDirectoryIfItDoesNotExist("sources")
 
 	sourceFiles := walkSourceFiles()
+
+	if len(sourceFiles) == 0 {
+		printError("Please, put .vmf file(s) in \"sources\" folder.")
+		return
+	}
 
 	for _, file := range sourceFiles {
 		handleFile(file)
@@ -82,7 +90,7 @@ func handleFile(path string) {
 	writeLinesToFile(materialsArray, "results/"+fileName+"_materials.txt")
 
 	if err := scanner.Err(); err != nil {
-		fmt.Println("Error reading vmf: ", err)
+		printError("Error reading vmf: " + err.Error())
 	}
 }
 
@@ -119,4 +127,13 @@ func writeLinesToFile(lines []string, path string) error {
 	}
 
 	return w.Flush()
+}
+
+func printError(message string) {
+	// For Windows and macOS show dialog message
+	if runtime.GOOS == "windows" || runtime.GOOS == "darwin" {
+		dialog.Message(message).Title("Error").Error()
+	} else {
+		fmt.Println(message)
+	}
 }

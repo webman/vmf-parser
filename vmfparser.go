@@ -69,7 +69,8 @@ func handleFile(path string) {
 
 	line := 1
 
-	var materialsArray []string
+	var materials []string
+	var models []string
 
 	for scanner.Scan() {
 		text := scanner.Text()
@@ -78,16 +79,28 @@ func handleFile(path string) {
 			materialRow := strings.Split(text, " ")
 			materialPath := strings.Trim(string(materialRow[1]), "\"")
 
-			if !arrayContainsString(materialsArray, materialPath) {
-				materialsArray = append(materialsArray, materialPath)
+			if !arrayContainsString(materials, materialPath) {
+				materials = append(materials, materialPath)
+			}
+		}
+
+		if strings.Contains(text, "model") {
+			modelRow := strings.Split(text, " ")
+			modelPath := strings.Trim(string(modelRow[1]), "\"")
+
+			if !arrayContainsString(models, modelPath) {
+				models = append(models, modelPath)
 			}
 		}
 
 		line++
 	}
 
-	sort.Strings(materialsArray)
-	writeLinesToFile(materialsArray, "results/"+fileName+"_materials.txt")
+	sort.Strings(materials)
+	sort.Strings(models)
+
+	writeLinesToFile(materials, "results/"+fileName+"_materials.txt")
+	writeLinesToFile(models, "results/"+fileName+"_models.txt")
 
 	if err := scanner.Err(); err != nil {
 		printError("Error reading vmf: " + err.Error())
